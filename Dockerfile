@@ -8,6 +8,8 @@ VOLUME [ "/ghosler" ]
 RUN npm i -g ghosler-cli pm2
 
 RUN ghosler install
+RUN echo |
+RUN echo |
 
 # Expose port 2369
 EXPOSE 2369
