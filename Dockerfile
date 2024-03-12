@@ -3,13 +3,14 @@ FROM node:20-alpine3.17
 # Create app directory
 WORKDIR /ghosler
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 VOLUME [ "/ghosler" ]
 
 RUN npm i -g ghosler-cli pm2
 
 RUN ghosler install
-RUN echo |
-RUN echo |
+
 
 # Expose port 2369
 EXPOSE 2369
