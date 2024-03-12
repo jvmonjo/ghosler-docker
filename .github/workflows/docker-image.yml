@@ -1,0 +1,35 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USERNAME}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: get-npm-version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@v1.3.1
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag ghost-webhooks:${{ steps.package-version.outputs.current-version}} --tag ghost-webhooks:latest
+    - name: Docker tag version
+      run: docker tag ghosler:${{ steps.package-version.outputs.current-version}} jvmonjo/ghost-webhooks:${{ steps.package-version.outputs.current-version}}
+    - name: Docker tag latest
+      run: docker tag ghosler:latest jvmonjo/ghosler:latest
+    - name: Docker push version
+      run: docker push jvmonjo/ghosler:${{ steps.package-version.outputs.current-version}}
+    - name: Docker push latest
+      run: docker push jvmonjo/ghosler:latest
